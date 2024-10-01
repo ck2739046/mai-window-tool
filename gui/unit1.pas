@@ -37,12 +37,6 @@ type
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
-    procedure Edit1Change(Sender: TObject);
-    procedure Edit2Change(Sender: TObject);
-    procedure Edit3Change(Sender: TObject);
-    procedure Edit4Change(Sender: TObject);
-    procedure Edit5Change(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
 
   public
@@ -51,6 +45,12 @@ type
 
 var
   Form1: TForm1;
+  IsSleeping: Boolean;
+  IniFile: TIniFile;
+  ConfigFilePath: string;
+  X, Y, W, H: Integer;
+  WindowHandle1: HWND;
+  WindowTitle1: string;
 
 implementation
 
@@ -58,95 +58,110 @@ implementation
 
 { TForm1 }
 
-procedure TForm1.Edit3Change(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.Edit4Change(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.Edit5Change(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.FormCreate(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.Edit2Change(Sender: TObject);
-begin
-
-end;
-
-procedure TForm1.Edit1Change(Sender: TObject);
-begin
-
-end;
-
 procedure TForm1.Button1Click(Sender: TObject);
 // save config 1
-var
-   IniFile1: TIniFile;
-   ConfigFilePath1: string;
 begin
-  // get current dir + Config1.ini
-  ConfigFilePath1 := ExtractFilePath(Application.ExeName) + 'Config1.ini';
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
+  // check parameters
+  if (Edit1.Text = '') or (not TryStrToInt(Edit2.Text, W)) or
+     (not TryStrToInt(Edit3.Text, H)) or (not TryStrToInt(Edit4.Text, X)) or
+     (not TryStrToInt(Edit5.Text, Y)) then
+  begin
+    StatusBar1.Panels[1].Text := 'Invalid parameters';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
+    Exit;
+  end;
+
+  // get path: current dir + Config1.ini
+  ConfigFilePath := ExtractFilePath(Application.ExeName) + 'Config1.ini';
   // create TIniFile object
-  IniFile1 := TIniFile.Create(ConfigFilePath1);
+  IniFile := TIniFile.Create(ConfigFilePath);
 
   try
     // write into config
-    IniFile1.WriteString('Config', '1', Edit1.Text); // title
-    IniFile1.WriteString('Config', '2', Edit2.Text); // width
-    IniFile1.WriteString('Config', '3', Edit3.Text); // height
-    IniFile1.WriteString('Config', '4', Edit4.Text); // left
-    IniFile1.WriteString('Config', '5', Edit5.Text); // top
-    ShowMessage('Config1.ini Save Success');
+    IniFile.WriteString('Config', '1', Edit1.Text); // title
+    IniFile.WriteString('Config', '2', Edit2.Text); // width
+    IniFile.WriteString('Config', '3', Edit3.Text); // height
+    IniFile.WriteString('Config', '4', Edit4.Text); // left
+    IniFile.WriteString('Config', '5', Edit5.Text); // top
+    // print success
+    StatusBar1.Panels[1].Text := 'Save success';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
   finally
     // free IniFile
-    IniFile1.Free;
+    IniFile.Free;
   end;
+
+  IsSleeping := False;
 
 end;
 
 procedure TForm1.Button2Click(Sender: TObject);
 // save config 2
-var
-   IniFile2: TIniFile;
-   ConfigFilePath2: string;
 begin
-  // get current dir + Config2.ini
-  ConfigFilePath2 := ExtractFilePath(Application.ExeName) + 'Config2.ini';
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
+  // check parameters
+  if (Edit1.Text = '') or (not TryStrToInt(Edit2.Text, W)) or
+     (not TryStrToInt(Edit3.Text, H)) or (not TryStrToInt(Edit4.Text, X)) or
+     (not TryStrToInt(Edit5.Text, Y)) then
+  begin
+    StatusBar1.Panels[1].Text := 'Invalid parameters';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
+    Exit;
+  end;
+
+  // get path: current dir + Config2.ini
+  ConfigFilePath := ExtractFilePath(Application.ExeName) + 'Config2.ini';
   // create TIniFile object
-  IniFile2 := TIniFile.Create(ConfigFilePath2);
+  IniFile := TIniFile.Create(ConfigFilePath);
 
   try
     // write into config
-    IniFile2.WriteString('Config', '1', Edit1.Text); // title
-    IniFile2.WriteString('Config', '2', Edit2.Text); // width
-    IniFile2.WriteString('Config', '3', Edit3.Text); // height
-    IniFile2.WriteString('Config', '4', Edit4.Text); // left
-    IniFile2.WriteString('Config', '5', Edit5.Text); // top
-    ShowMessage('Config2.ini Save Success');
+    IniFile.WriteString('Config', '1', Edit1.Text); // title
+    IniFile.WriteString('Config', '2', Edit2.Text); // width
+    IniFile.WriteString('Config', '3', Edit3.Text); // height
+    IniFile.WriteString('Config', '4', Edit4.Text); // left
+    IniFile.WriteString('Config', '5', Edit5.Text); // top
+    // print success
+    StatusBar1.Panels[1].Text := 'Save success';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
   finally
     // free IniFile
-    IniFile2.Free;
+    IniFile.Free;
   end;
+
+  IsSleeping := False;
 
 end;
 
 procedure TForm1.Button3Click(Sender: TObject);
 // read config 1
-var
-  IniFile: TIniFile;
-  ConfigFilePath: string;
 begin
-  // get current dir + Config1.ini
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
+  // get path: current dir + Config1.ini
   ConfigFilePath := ExtractFilePath(Application.ExeName) + 'Config1.ini';
   // create TIniFile object
   IniFile := TIniFile.Create(ConfigFilePath);
@@ -163,15 +178,18 @@ begin
     IniFile.Free;
   end;
 
+  IsSleeping := False;
+
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
 // read config 2
-var
-  IniFile: TIniFile;
-  ConfigFilePath: string;
 begin
-  // get current dir + Config2.ini
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
+  // get path: current dir + Config2.ini
   ConfigFilePath := ExtractFilePath(Application.ExeName) + 'Config2.ini';
   // create TIniFile object
   IniFile := TIniFile.Create(ConfigFilePath);
@@ -188,116 +206,133 @@ begin
     IniFile.Free;
   end;
 
+  IsSleeping := False;
+
 end;
 
 procedure TForm1.Button5Click(Sender: TObject);
 // move window
-var
-  WindowHandle1: HWND;
-  WindowTitle1: string;
-  X1, Y1, Width1, Height1: Integer;
 begin
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
   // check parameters
-  if not TryStrToInt(Edit2.Text, Width1) then
+  if (Edit1.Text = '') or (not TryStrToInt(Edit2.Text, W)) or
+     (not TryStrToInt(Edit3.Text, H)) or (not TryStrToInt(Edit4.Text, X)) or
+     (not TryStrToInt(Edit5.Text, Y)) then
   begin
-    ShowMessage('invalid Width');
-    Exit;
-  end;
-  if not TryStrToInt(Edit3.Text, Height1) then
-  begin
-    ShowMessage('invalid Height');
-    Exit;
-  end;
-  if not TryStrToInt(Edit4.Text, X1) then
-  begin
-    ShowMessage('invalid Left');
-    Exit;
-  end;
-  if not TryStrToInt(Edit5.Text, Y1) then
-  begin
-    ShowMessage('invalid Top');
+    StatusBar1.Panels[1].Text := 'Invalid parameters';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
     Exit;
   end;
   // get window title
   WindowTitle1 := Edit1.Text;
   WindowHandle1 := FindWindow(nil, PChar(WindowTitle1));
   // get new postion
-  Width1 := StrToInt(Edit2.Text);
-  Height1 := StrToInt(Edit3.Text);
+  W := StrToInt(Edit2.Text);
+  H := StrToInt(Edit3.Text);
   // get new size
-  X1 := StrToInt(Edit4.Text);
-  Y1 := StrToInt(Edit5.Text);
+  X := StrToInt(Edit4.Text);
+  Y := StrToInt(Edit5.Text);
   // move window
-  SetWindowPos(WindowHandle1, 0, X1, Y1, Width1, Height1, SWP_NOZORDER);
+  SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER);
+
+  IsSleeping := False;
+
 end;
 
 procedure TForm1.Button6Click(Sender: TObject);
 // start game
 var
-  WindowHandle2: HWND;
-  WindowTitle2: string;
   StartTime: Cardinal;
   Timeout: Cardinal;
-  X2, Y2, Width2, Height2: Integer;
+  RemainingTime: Cardinal;
+  Result: Cardinal;
 begin
+  // check sleep
+  if IsSleeping then
+    Exit;
+  IsSleeping := True;
   // check parameters
-  if not TryStrToInt(Edit2.Text, Width2) then
+  if (Edit1.Text = '') or (not TryStrToInt(Edit2.Text, W)) or
+     (not TryStrToInt(Edit3.Text, H)) or (not TryStrToInt(Edit4.Text, X)) or
+     (not TryStrToInt(Edit5.Text, Y)) then
   begin
-    ShowMessage('invalid Width');
+    StatusBar1.Panels[1].Text := 'Invalid parameters';
+    Application.ProcessMessages;
+    Sleep(500);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
     Exit;
   end;
-  if not TryStrToInt(Edit3.Text, Height2) then
-  begin
-    ShowMessage('invalid Height');
-    Exit;
-  end;
-  if not TryStrToInt(Edit4.Text, X2) then
-  begin
-    ShowMessage('invalid Left');
-    Exit;
-  end;
-  if not TryStrToInt(Edit5.Text, Y2) then
-  begin
-    ShowMessage('invalid Top');
-    Exit;
-  end;
+
   // run start.bat
-  ShellExecute(0, 'open', 'start.bat', nil, nil, SW_SHOW);
+  Result := ShellExecute(0, 'open', 'start.bat', nil, nil, SW_SHOW);
+  if Result <= 32 then
+  begin
+    StatusBar1.Panels[1].Text := Format('ShellExecuteError%d', [Result]);
+    Application.ProcessMessages;
+    Sleep(2000);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
+    Exit;
+  end;
+
   // get window title
-  WindowTitle2 := Edit1.Text;
-  // set timeout 20s
+  WindowTitle1 := Edit1.Text;
+  // set timeout 40s
   StartTime := GetTickCount;
-  Timeout := 20000;
+  Timeout := 40000;
 
   // search window loop
   while (GetTickCount - StartTime < Timeout) do
   begin
+
+    // calculate remaining time
+    RemainingTime := 40 - (GetTickCount - StartTime) div 1000;
+    // print remaining time
+    StatusBar1.Panels[1].Text := Format('Searching...%d', [RemainingTime]);
+    // update UI
+    Application.ProcessMessages;
     // search window title
-    WindowHandle2 := FindWindow(nil, PChar(WindowTitle2));
+    WindowHandle1 := FindWindow(nil, PChar(WindowTitle1));
 
     // if window found
-    if WindowHandle2 <> 0 then
+    if WindowHandle1 <> 0 then
     begin
+      StatusBar1.Panels[1].Text := 'Window found';
+      Application.ProcessMessages;
       // get new postion
-      Width2 := StrToInt(Edit2.Text);
-      Height2 := StrToInt(Edit3.Text);
+      W := StrToInt(Edit2.Text);
+      H := StrToInt(Edit3.Text);
       // get new size
-      X2 := StrToInt(Edit4.Text);
-      Y2 := StrToInt(Edit5.Text);
-      // move window
-      Sleep(4000);
-      SetWindowPos(WindowHandle2, 0, X2, Y2, Width2, Height2, SWP_NOZORDER);
-      sleep(500);
+      X := StrToInt(Edit4.Text);
+      Y := StrToInt(Edit5.Text);
+      // wait window show up
+      Sleep(10000);
+      // reset window
+      SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER);
+      IsSleeping := False;
       Close;
       Exit;
     end;
-    Sleep(100);
+    Sleep(200);
   end;
 
-  // timeout
-  ShowMessage('game window not found, quit in 3 seconds...');
-  Sleep(3000);
-  Application.Terminate;
+  // if timeout
+  StatusBar1.Panels[1].Text := 'Window not found';
+  Application.ProcessMessages;
+  Sleep(2000);
+  StatusBar1.Panels[1].Text := '';
+  Application.ProcessMessages;
+  IsSleeping := False;
 end;
 
 end.
