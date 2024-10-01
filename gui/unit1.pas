@@ -253,6 +253,8 @@ var
   Timeout: Cardinal;
   RemainingTime: Cardinal;
   Result: Cardinal;
+  isTimeout: Boolean;
+  Rect: TRect;
 begin
   // check sleep
   if IsSleeping then
@@ -290,11 +292,11 @@ begin
   // set timeout 40s
   StartTime := GetTickCount;
   Timeout := 40000;
+  isTimeout := True;
 
   // search window loop
   while (GetTickCount - StartTime < Timeout) do
   begin
-
     // calculate remaining time
     RemainingTime := 40 - (GetTickCount - StartTime) div 1000;
     // print remaining time
@@ -303,36 +305,77 @@ begin
     Application.ProcessMessages;
     // search window title
     WindowHandle1 := FindWindow(nil, PChar(WindowTitle1));
-
     // if window found
     if WindowHandle1 <> 0 then
     begin
-      StatusBar1.Panels[1].Text := 'Window found';
-      Application.ProcessMessages;
-      // get new postion
-      W := StrToInt(Edit2.Text);
-      H := StrToInt(Edit3.Text);
-      // get new size
-      X := StrToInt(Edit4.Text);
-      Y := StrToInt(Edit5.Text);
-      // wait window show up
-      Sleep(10000);
-      // reset window
-      SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER);
-      IsSleeping := False;
-      Close;
-      Exit;
+      isTimeout := False;
+      Break;
     end;
-    Sleep(200);
+    // sleep
+    Sleep(300);
   end;
 
   // if timeout
-  StatusBar1.Panels[1].Text := 'Window not found';
-  Application.ProcessMessages;
-  Sleep(2000);
-  StatusBar1.Panels[1].Text := '';
-  Application.ProcessMessages;
-  IsSleeping := False;
+  if isTimeout then
+  begin
+    StatusBar1.Panels[1].Text := 'Window not found';
+    Application.ProcessMessages;
+    Sleep(2000);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
+    Exit;
+  end;
+
+  // get new postion
+  W := StrToInt(Edit2.Text);
+  H := StrToInt(Edit3.Text);
+  // get new size
+  X := StrToInt(Edit4.Text);
+  Y := StrToInt(Edit5.Text);
+  // set timeout 20s
+  StartTime := GetTickCount;
+  Timeout := 20000;
+  isTimeout := True;
+
+  // adjust window loop
+  while (GetTickCount - StartTime < Timeout) do
+  begin
+    // calculate remaining time
+    RemainingTime := 20 - (GetTickCount - StartTime) div 1000;
+    // print remaining time
+    StatusBar1.Panels[1].Text := Format('Adjusting...%d', [RemainingTime]);
+    // update UI
+    Application.ProcessMessages;
+    // check window position and size
+    GetWindowRect(WindowHandle1, Rect);
+    if (Rect.Left <> X) or (Rect.Top <> Y) or (Rect.Right - Rect.Left <> W) or (Rect.Bottom - Rect.Top <> H) then
+       // try adjust window
+       SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER)
+    else
+    begin
+      // adjust success
+      IsSleeping := False;
+      isTimeout := False;
+      Close;
+      Exit;
+    end;
+    // sleep
+    Sleep(300);
+  end;
+
+  // if timeout
+  if isTimeout then
+  begin
+    StatusBar1.Panels[1].Text := 'Window not popup';
+    Application.ProcessMessages;
+    Sleep(2000);
+    StatusBar1.Panels[1].Text := '';
+    Application.ProcessMessages;
+    IsSleeping := False;
+    Exit;
+  end;
+
 end;
 
 end.

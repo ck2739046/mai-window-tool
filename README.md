@@ -9,7 +9,7 @@ Just double-click or use cmd to run cli.exe, no other parameters are required.\
 Please make sure config.ini is set up before starting cli.exe.
 
 Default timeout of game window search is 40 seconds.\
-Once found, the tool will wait another 10 seconds before the game window actually pops up.
+Default timeout of game window adjust is 20 seconds.
 
 # Error Handling
 

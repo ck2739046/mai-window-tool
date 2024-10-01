@@ -9,13 +9,18 @@
         <Filename Value="cli.lpr"/>
         <IsPartOfProject Value="True"/>
         <IsVisibleTab Value="True"/>
-        <TopLine Value="64"/>
-        <CursorPos X="36" Y="92"/>
-        <UsageCount Value="24"/>
+        <TopLine Value="86"/>
+        <CursorPos X="16" Y="118"/>
+        <UsageCount Value="25"/>
         <Loaded Value="True"/>
       </Unit>
     </Units>
-    <JumpHistory HistoryIndex="-1"/>
+    <JumpHistory>
+      <Position>
+        <Filename Value="cli.lpr"/>
+        <Caret Line="153" Column="7" TopLine="115"/>
+      </Position>
+    </JumpHistory>
     <RunParams>
       <FormatVersion Value="2"/>
       <Modes ActiveMode=""/>

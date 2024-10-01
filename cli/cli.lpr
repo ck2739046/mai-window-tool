@@ -16,6 +16,8 @@ var
   Edit1, Edit2, Edit3, Edit4, Edit5: string;
   RemainingTime: Cardinal;
   Result: Cardinal;
+  isTimeout: Boolean;
+  Rect: TRect;
 
 {$R *.res}
 
@@ -63,18 +65,18 @@ begin
   end;
 
   // -------------------------------------------------
-  // 3. reset window
+  // 3. search window
 
   // get window title
   WindowTitle := Edit1;
   // set timeout 40s
   StartTime := GetTickCount;
   Timeout := 40000;
+  isTimeout := True;
 
   // search window loop
   while (GetTickCount - StartTime < Timeout) do
   begin
-
     // calculate remaining time
     RemainingTime := 40 - (GetTickCount - StartTime) div 1000;
     // print remaining time
@@ -84,30 +86,69 @@ begin
       Write('Search game window...', RemainingTime, #13);
     // search window title
     WindowHandle1 := FindWindow(nil, PChar(WindowTitle));
-
     // if window found
     if WindowHandle1 <> 0 then
     begin
-      Writeln('');
-      Writeln('Game window found');
-      // get new postion
-      W := StrToInt(Edit2);
-      H := StrToInt(Edit3);
-      // get new size
-      X := StrToInt(Edit4);
-      Y := StrToInt(Edit5);
-      // wait window show up
-      Sleep(10000);
-      // reset window
-      SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER);
-      Exit;
+      isTimeout := False;
+      Break;
     end;
-    Sleep(200);
+    // sleep
+    Sleep(300);
   end;
 
   // if timeout
-  Writeln('--Game window not found, quit in 5 seconds...');
-  Sleep(5000);
-  ExitProcess(1);
+  if isTimeout then
+  begin
+    Writeln('--Game window not found, quit in 5 seconds...');
+    Sleep(5000);
+    ExitProcess(1);
+  end;
+
+  // -------------------------------------------------
+  // 4. adjust window
+
+  // get new postion
+  W := StrToInt(Edit2);
+  H := StrToInt(Edit3);
+  // get new size
+  X := StrToInt(Edit4);
+  Y := StrToInt(Edit5);
+  // set timeout 20s
+  StartTime := GetTickCount;
+  Timeout := 20000;
+  isTimeout := True;
+
+  // adjust window loop
+  while (GetTickCount - StartTime < Timeout) do
+  begin
+    // calculate remaining time
+    RemainingTime := 20 - (GetTickCount - StartTime) div 1000;
+    // print remaining time
+    if RemainingTime < 10 then
+      Write('Adjusting game window...', RemainingTime, ' ', #13)
+    else
+      Write('Adjusting game window...', RemainingTime, #13);
+    // check window position and size
+    GetWindowRect(WindowHandle1, Rect);
+    if (Rect.Left <> X) or (Rect.Top <> Y) or (Rect.Right - Rect.Left <> W) or (Rect.Bottom - Rect.Top <> H) then
+       // try adjust window
+       SetWindowPos(WindowHandle1, 0, X, Y, W, H, SWP_NOZORDER)
+    else
+    begin
+      // adjust success
+      isTimeout := False;
+      Break;
+    end;
+    // sleep
+    Sleep(300);
+  end;
+
+  // if timeout
+  if isTimeout then
+  begin
+    Writeln('--Game window not popup, quit in 5 seconds...');
+    Sleep(5000);
+    ExitProcess(1);
+  end;
 
 end.
