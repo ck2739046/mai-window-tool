@@ -18,6 +18,7 @@ var
   Result: Cardinal;
   isTimeout: Boolean;
   Rect: TRect;
+  batPath: string;
 
 {$R *.res}
 
@@ -55,7 +56,8 @@ begin
 
   Writeln('Run start.bat...');
   // run start.bat
-  Result := ShellExecute(0, 'open', 'start.bat', nil, nil, SW_SHOW);
+  batPath := ExtractFilePath(ParamStr(0)) + 'start.bat';
+  Result := ShellExecute(0, 'open', PChar(batPath), nil, nil, SW_SHOW);
   if Result <= 32 then
   begin
     Writeln('--ShellExecuteError: ', Result);
@@ -93,7 +95,7 @@ begin
       Break;
     end;
     // sleep
-    Sleep(300);
+    Sleep(200);
   end;
 
   // if timeout
@@ -113,21 +115,21 @@ begin
   // get new size
   X := StrToInt(Edit4);
   Y := StrToInt(Edit5);
-  // set timeout 20s
-  StartTime := GetTickCount;
-  Timeout := 20000;
-  isTimeout := True;
 
   // adjust window loop
   while (GetTickCount - StartTime < Timeout) do
   begin
+  // sleep
+    Sleep(200);
     // calculate remaining time
-    RemainingTime := 20 - (GetTickCount - StartTime) div 1000;
+    RemainingTime := 40 - (GetTickCount - StartTime) div 1000;
     // print remaining time
     if RemainingTime < 10 then
       Write('Adjusting game window...', RemainingTime, ' ', #13)
     else
       Write('Adjusting game window...', RemainingTime, #13);
+    // check window visible
+    if not isWindowVisible(WindowHandle1) then Continue;
     // check window position and size
     GetWindowRect(WindowHandle1, Rect);
     if (Rect.Left <> X) or (Rect.Top <> Y) or (Rect.Right - Rect.Left <> W) or (Rect.Bottom - Rect.Top <> H) then
@@ -139,8 +141,6 @@ begin
       isTimeout := False;
       Break;
     end;
-    // sleep
-    Sleep(1000);
   end;
 
   // if timeout

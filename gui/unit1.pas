@@ -255,6 +255,7 @@ var
   Result: Cardinal;
   isTimeout: Boolean;
   Rect: TRect;
+  batPath: string;
 begin
   // check sleep
   if IsSleeping then
@@ -275,7 +276,8 @@ begin
   end;
 
   // run start.bat
-  Result := ShellExecute(0, 'open', 'start.bat', nil, nil, SW_SHOW);
+  batPath := ExtractFilePath(Application.ExeName) + 'start.bat';
+  Result := ShellExecute(0, 'open', PChar(batPath), nil, nil, SW_SHOW);
   if Result <= 32 then
   begin
     StatusBar1.Panels[1].Text := Format('ShellExecuteError%d', [Result]);
@@ -312,7 +314,7 @@ begin
       Break;
     end;
     // sleep
-    Sleep(300);
+    Sleep(200);
   end;
 
   // if timeout
@@ -333,20 +335,20 @@ begin
   // get new size
   X := StrToInt(Edit4.Text);
   Y := StrToInt(Edit5.Text);
-  // set timeout 20s
-  StartTime := GetTickCount;
-  Timeout := 20000;
-  isTimeout := True;
 
   // adjust window loop
   while (GetTickCount - StartTime < Timeout) do
   begin
+    // sleep
+    Sleep(200);
     // calculate remaining time
-    RemainingTime := 20 - (GetTickCount - StartTime) div 1000;
+    RemainingTime := 40 - (GetTickCount - StartTime) div 1000;
     // print remaining time
     StatusBar1.Panels[1].Text := Format('Adjusting...%d', [RemainingTime]);
     // update UI
     Application.ProcessMessages;
+    // check window visible
+    if not isWindowVisible(WindowHandle1) then Continue;
     // check window position and size
     GetWindowRect(WindowHandle1, Rect);
     if (Rect.Left <> X) or (Rect.Top <> Y) or (Rect.Right - Rect.Left <> W) or (Rect.Bottom - Rect.Top <> H) then
@@ -360,8 +362,6 @@ begin
       Close;
       Exit;
     end;
-    // sleep
-    Sleep(1000);
   end;
 
   // if timeout
