@@ -361,7 +361,7 @@ begin
       Exit;
     end;
     // sleep
-    Sleep(300);
+    Sleep(1000);
   end;
 
   // if timeout
