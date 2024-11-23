@@ -22,7 +22,7 @@
         <UnitName Value="Unit1"/>
         <IsVisibleTab Value="True"/>
         <TopLine Value="253"/>
-        <CursorPos X="8" Y="282"/>
+        <CursorPos X="27" Y="275"/>
         <UsageCount Value="32"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
@@ -37,7 +37,7 @@
         <Loaded Value="True"/>
       </Unit>
       <Unit>
-        <Filename Value="..\..\..\Desktop\gui3\unit1.pas"/>
+        <Filename Value="D:\Desktop\gui3\unit1.pas"/>
         <UnitName Value="Unit1"/>
         <EditorIndex Value="-1"/>
         <UsageCount Value="10"/>

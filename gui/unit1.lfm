@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 94
+  Left = 2127
   Height = 237
-  Top = 333
+  Top = 980
   Width = 360
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
@@ -146,8 +146,7 @@ object Form1: TForm1
     000000000000000000000000000080000001C0000003E0000007F000000FF800
     001F
   }
-  Position = poScreenCenter
-  LCLVersion = '3.4.0.0'
+  LCLVersion = '3.6.0.0'
   object StatusBar1: TStatusBar
     Left = 0
     Height = 29
